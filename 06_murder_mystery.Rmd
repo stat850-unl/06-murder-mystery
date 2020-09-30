@@ -28,7 +28,12 @@ Your assignment must compile on a different computer as long as the sas path is 
 
 I have exported the tables as CSVs, and you can access those using the code at these links: [R](https://github.com/srvanderplas/unl-stat850/blob/master/code/06_sql-murder-setup.R), [SAS](https://github.com/srvanderplas/unl-stat850/blob/master/code/06_sql-murder-setup.sas)
 
-You can copy the code from these repositories and include that code as your first code chunk.
+The chunks below use the code to read in each of the 8 tables of data for this assignment.
+
+Hints:
+
+- You can use a lot of filter statements, but it will in many cases be easier to use joins. 
+- See if you can write code that doesn't require you to type out knowledge gained from a previous clue
 
 
 ***
