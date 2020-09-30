@@ -5,23 +5,11 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = F)
 options(digits = 3)
+
+library(tidyverse)
 ```
-
-```{r load-sas-libraries, echo = F, message = F, warning = F}
-
-library(SASmarkdown)
-sas_enginesetup(sashtml=sashtml)
-
-sasexe <- "C:/Program Files/SASHome/SASFoundation/9.4/sas.exe"
-sasopts <- "-nosplash -ls 75"
-
-# Linux options (for grading, please leave this in!)
-# sasexe <- "/usr/local/SASHome/SASFoundation/9.4/bin/sas_en"
-# sasopts <- "-ls 75"
-```
-
 
 ## Instructions
 Northwestern University's Knight lab created a SQL murder mystery to help users sharpen their database skills by solving the crime that happened at SQL city. There are tables with different pieces of information - social media checkins, people, drivers licenses, crime scene reports, police interviews, and more. 
@@ -36,18 +24,9 @@ When you are finished with the assignment:
 4. Locate the Rmd file on github and click on the SHA link for the file.
 5. Paste the url of the resulting page into Canvas to submit your assignment.
 
-Your assignment must compile on a different computer as long as the saspath and DSN connection is set up correctly for that machine.
+Your assignment must compile on a different computer as long as the sas path is set up correctly for that machine.
 
-You can connect to the SQLite database in R or SAS, though in SAS you'll need to have a DSN connection set up. (Mine is below and should be similar to what you'd need on Windows/Mac). 
-
-````
-[sqlmystery]
-Description = SQL Murder Mystery
-Driver = SQLite3
-Database = /home/susan/Projects/Class/unl-stat850/2020-stat850/data/sql-murder-mystery.db
-````
-
-Alternately, I have exported the tables as CSVs, and you can access those using the code at these links: [R](https://github.com/srvanderplas/unl-stat850/blob/master/code/06_sql-murder-setup.R), [SAS](https://github.com/srvanderplas/unl-stat850/blob/master/code/06_sql-murder-setup.sas)
+I have exported the tables as CSVs, and you can access those using the code at these links: [R](https://github.com/srvanderplas/unl-stat850/blob/master/code/06_sql-murder-setup.R), [SAS](https://github.com/srvanderplas/unl-stat850/blob/master/code/06_sql-murder-setup.sas)
 
 You can copy the code from these repositories and include that code as your first code chunk.
 
@@ -61,17 +40,37 @@ This database schema may help you figure out how to navigate the database:
 ![sql-murder-mystery database schema diagram](https://github.com/NUKnightLab/sql-mysteries/blob/master/schema.png?raw=true)
 
 ## R
-```{r data-setup-r}
-# Your database connection code goes here. Store the connection as con 
+```{r db-setup-r, eval = F}
+# you can do the assignment using the database, if you want, 
+# or you can use the script file to read in each table separately.
 library(RSQLite)
 library(DBI)
-# This is what mine looks like with the DSN setup above
+
+# Your database connection code goes here. Store the connection as con 
 con <- dbConnect(RSQLite::SQLite(), "sqlmystery")
+```
+
+```{r table-setup-r}
+# Load all tables from CSV
+source("https://raw.githubusercontent.com/srvanderplas/unl-stat850/master/code/06_sql-murder-setup.R")
 ```
 
 ## SAS
 
-```{r, engine="sashtml", engine.path=sasexe, engine.opts=sasopts, collectcode = T, error = T}
-/* This is what my connection information looks like in SAS with the DSN set up */
-libname murder odbc complete = "dsn=sqlmystery";
+```{r load-sas-libraries, echo = F, message = F, warning = F}
+
+library(SASmarkdown)
+sas_enginesetup(sashtml=sashtml)
+
+sasexe <- "C:/Program Files/SASHome/SASFoundation/9.4/sas.exe"
+sasopts <- "-nosplash -ls 75"
+
+# Linux options (for grading, please leave this in!)
+sasexe <- "/usr/local/SASHome/SASFoundation/9.4/bin/sas_en"
+sasopts <- "-ls 75"
+```
+
+```{r, engine = "sashtml", engine.path = sasexe, engine.opts = sasopts, collectcode = T, error = T, include = T}
+/* This runs code stored in the import-code.sas file */
+%include 'import-code.sas';
 ```
